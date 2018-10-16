@@ -10,7 +10,7 @@ memchunk *alloced_nodes = NULL;
 memchunk *free_data = NULL;
 memchunk *free_nodes = NULL;
 
-int log_fd;
+FILE *pype = NULL;
 
 memchunk *_find_chunk_from_ptr(void *ptr){
 	memchunk *this_chunk = alloced_nodes;
@@ -81,23 +81,17 @@ int _move_memchunk(memchunk *chunk){
 	return -1;
 }
 
-int xmalloc_init(const char *filename){
+int xmalloc_init(){
 	
 	// NOTE: this interface will probably change repeatedly while in dev
 	// launches Flask server, opens pipe for logging
 	// consider adding an atExit type event handler
 
-	if(filename == NULL){
+	pype = popen("python3 server_main.py", "w");
+	
+	if (pype == NULL){
 		return -1;
 	}
-
-	int fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC);
-
-	if (fd == -1){
-		return -1;
-	}
-
-	log_fd = fd;
 
 	return 0;
 
@@ -132,10 +126,12 @@ void *node_malloc(size_t size, void **dest){
 	*dest = (void *) (new_chunk->chunk);
 
 	if (dest_chunk) { // source pointer is also on heap
-		dprintf(log_fd, "N:H:%p[%ld] -> %p\n", dest_chunk, dest-(void **)dest_chunk->chunk, new_chunk->chunk);
+		fprintf(pype, "N:H:%p[%ld] -> %p\n", dest_chunk, dest-(void **)dest_chunk->chunk, new_chunk->chunk);
+		fflush(pype);
 	}
 	else { // source pointer not on heap
-		dprintf(log_fd, "N:S:%p -> %p\n", dest, new_chunk->chunk);
+		fprintf(pype, "N:S:%p -> %p\n", dest, new_chunk->chunk);
+		fflush(pype);
 	}
 
 	return (void *) new_chunk->chunk;
@@ -171,10 +167,12 @@ void *data_malloc(size_t size, void **dest){
 	*dest = (void *) (new_chunk->chunk);
 
 	if (dest_chunk) { // source pointer is also on heap
-		dprintf(log_fd, "D:H:%p[%ld] -> %p\n", dest_chunk, dest-(void **)dest_chunk->chunk, new_chunk);
+		fprintf(pype, "D:H:%p[%ld] -> %p\n", dest_chunk, dest-(void **)dest_chunk->chunk, new_chunk);
+		fflush(pype);
 	}
 	else { // source pointer not on heap
-		dprintf(log_fd, "D:S:%p -> %p\n", dest, new_chunk);
+		fprintf(pype, "D:S:%p -> %p\n", dest, new_chunk);
+		fflush(pype);
 	}
 
 	return (void *) new_chunk->chunk;
@@ -194,7 +192,8 @@ void xmalloc_free(void *ptr){
 	// place DLLnode in freed
 	int status = _move_memchunk(this_chunk);
 
-	dprintf(log_fd, "F:%p\n", this_chunk);
+	fprintf(pype, "F:%p\n", this_chunk);
+	fflush(pype);
 	return;
 }
 
@@ -205,29 +204,11 @@ void ptrcpy(void **dest, void *src){
 	memchunk *dest_chunk = _find_chunk_from_ptr(dest); // the pointer types here are an advanced postgrad problem, remember to ask in interview later
 
 	if (dest_chunk) { // source pointer is also on heap
-		dprintf(log_fd, "C:H:%p[%d] -> %p\n", dest_chunk, dest-(void **)dest_chunk->chunk, src);
+		fprintf(pype, "C:H:%p[%d] -> %p\n", dest_chunk, dest-(void **)dest_chunk->chunk, src);
+		fflush(pype);
 	}
 	else { // source pointer not on heap
-		dprintf(log_fd, "C:S:%p -> %p\n", dest, src);
+		fprintf(pype, "C:S:%p -> %p\n", dest, src);
+		fflush(pype);
 	}
 }
-
-
-// #define ptrcpy(A, B) _ptrcpy(&(A), B)
-
-// void** -> void* -> void
-// dest -> ptr -> newloc
-// dest -> *dest -> **dest
-
-
-	
-// <->[]<->[]<->[000|||||||||||||||||||||||||||||||||||||||||||||||||||]<->[]<->[]
-// 						^
-// 						|
-
-
-// new_chunk -> [000||||||||||||||||||||]
-// 			 ^
-// 			 |
-//    dest -> start
-//  (&start)
