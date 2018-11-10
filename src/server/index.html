@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>COMET - Streaming</title>
+	<style type="text/css">
+		#dagrediv {
+			width: 100vw;
+			height: 100vh;
+			display: block;
+		}
+	</style>
+
+	<script type="text/javascript" src="scripts/cytoscape.js"></script>
+	<script type="text/javascript" src="scripts/graph_handler.js"></script>
+	<script type="text/javascript" src="scripts/sig_parser.js"></script>
+
+	<script type="text/javascript">
+		last_len = 0;
+		obj = {
+			xhr: new XMLHttpRequest(),
+			getData: function(){
+				this.xhr.onreadystatechange = this.showData;
+				this.xhr.open("GET", "http://127.0.0.1:5000");
+				this.xhr.send();
+			},
+			showData: function(){
+				if(this.readyState == 3){
+					var res = this.responseText;
+					res = res.slice(last_len);
+					var resArr = res.split("\n");
+
+					for(var i=0; i < resArr.length; i+= 1){
+						if(resArr[i].length > 1){
+							parse_signal(JSON.parse(resArr[i]));
+						}
+					}
+
+					// console.log(this.responseText)
+				}
+				if(this.readyState == 4){
+					console.log("FINAL:" + this.responseText);
+					// obj.getData();
+				}
+			}
+		}
+	</script>
+	<style type="text/css">
+		body{
+			font-family: sans-serif;
+		}
+	</style>
+</head>
+<body onload="obj.getData()">
+	<h2>Xrē</h2>
+	<p>Example front end client for the Xre streaming server</p>
+	<p>All logs are logged to console</p>
+
+	<div id="dagrediv">
+		<!-- treated as canvas -->
+	</div>
+</body>
+</html>
