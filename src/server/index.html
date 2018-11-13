@@ -9,6 +9,10 @@
 			display: block;
 		}
 	</style>
+	<script type="text/javascript">
+		signal_array = [];
+		cursor = 0;
+	</script>
 
 	<script type="text/javascript" src="scripts/cytoscape.js"></script>
 	<script type="text/javascript" src="scripts/graph_handler.js"></script>
@@ -31,7 +35,9 @@
 
 					for(var i=0; i < resArr.length; i+= 1){
 						if(resArr[i].length > 1){
-							parse_signal(JSON.parse(resArr[i]));
+							signal_array.push(JSON.parse(resArr[i]));
+							var slider = document.getElementById("slider");
+							slider.max = parseInt(slider.max) + 1;
 						}
 					}
 
@@ -58,5 +64,15 @@
 	<div id="dagrediv">
 		<!-- treated as canvas -->
 	</div>
+	
+	<input type="range" min=0 max=0 value=0 id="slider" width="100%">
+	<script type="text/javascript">
+		// base_graph.container = document.getElementById('dagrediv');
+		graph.container = document.getElementById('dagrediv');
+		var slider = document.getElementById("slider");
+		slider.oninput = function() {
+			render(this.value);
+		}
+	</script>
 </body>
 </html>

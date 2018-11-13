@@ -1,4 +1,27 @@
 
+render = function(index){
+	index = parseInt(index);
+	var i = 0;
+
+	if (index >= cursor){
+		i = cursor + 1;
+	}
+	else {
+		// graph = JSON.parse(JSON.stringify(base_graph));
+		graph.elements = [];
+	}
+
+	cursor = index;
+
+	for(i; i <= index; i++){
+		console.log(i);
+		parse_signal(signal_array[i]);
+	}
+
+	var cy = cytoscape(graph);
+
+}
+
 parse_signal = function(sig){
 	switch (sig.sigtype){
 		case "SIGALOC":

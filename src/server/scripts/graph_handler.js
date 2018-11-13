@@ -3,6 +3,7 @@
 // each node has additional attrib :
 	// alloced : [true, false]
 
+
 find_entity = function(id){
 	var l = graph.elements.length;
 
