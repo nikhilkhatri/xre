@@ -64,8 +64,9 @@
 	<div id="dagrediv">
 		<!-- treated as canvas -->
 	</div>
-	
-	<input type="range" min=0 max=0 value=0 id="slider" width="100%">
+	<input type="button" value="Prev" id="prev" onclick="rewind()"/>
+	<input type="range" min=0 max=0 value=0 id="slider" step=1 width="100%">
+	<input type="button" value="Next" id="next" onclick="forward()"/>
 	<script type="text/javascript">
 		// base_graph.container = document.getElementById('dagrediv');
 		graph.container = document.getElementById('dagrediv');
@@ -73,6 +74,20 @@
 		slider.oninput = function() {
 			render(this.value);
 		}
+
+		var prev = document.getElementById("prev");
+		function rewind() {
+			//slider.value = Math.max(0, slider.value - 1);
+			slider.stepDown()
+			render(slider.value);
+		}
+
+		function forward() {
+			//slider.value = Math.min(slider.max, slider.value + 1);
+			slider.stepUp();
+			render(slider.value);
+		}
+
 	</script>
 </body>
 </html>
