@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Xre</title>
+	<style type="text/css">
+		#dagrediv {
+			width: 100vw;
+			height: 50vh;
+			display: block;
+		}
+	</style>
+	<script type="text/javascript">
+		signal_array = [];
+		cursor = 0;
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="styles/styles.css">
+	<!-- <script type="text/javascript" src="scripts/cytoscape-dagre.js"></script> -->
+	<script type="text/javascript" src="scripts/cytoscape.js"></script>
+	<script type="text/javascript" src="scripts/graph_handler.js"></script>
+	<script type="text/javascript" src="scripts/sig_parser.js"></script>
+
+	<script type="text/javascript">
+		last_len = 0;
+		bpts = [];
+		obj = {
+			xhr: new XMLHttpRequest(),
+			getData: function(){
+				this.xhr.onreadystatechange = this.showData;
+				this.xhr.open("GET", "http://127.0.0.1:5000");
+				this.xhr.send();
+			},
+			showData: function(){
+				if(this.readyState == 3){
+					var res = this.responseText;
+
+					var new_len = res.length;
+					res = res.slice(last_len);
+					last_len = new_len;
+					
+					var resArr = res.split("\n");
+
+					for(var i=0; i < resArr.length; i+= 1){
+						if(resArr[i].length > 1){
+							var thissig = JSON.parse(resArr[i]);
+							
+							if (thissig.sigtype == "SIGBRK") {
+								// console.log("BREAKKKKK");
+								// console.log(thissig.label);
+								bpts.push(thissig);
+								var bcont = document.getElementById("bcontainer");
+								
+								var slider = document.getElementById("slider");
+								
+								var bpt = document.createElement("input");
+								bpt.type = "button";
+								bpt.value = thissig.label;
+								bpt.pos = slider.max;
+								
+								bpt.onclick = function() {
+									var slider = document.getElementById("slider");
+									slider.value = this.pos;
+									render(this.pos);
+								}
+
+								bcont.appendChild(bpt);
+							}
+							
+							else {
+								signal_array.push(thissig);
+								var slider = document.getElementById("slider");
+								slider.min = "0";
+								slider.max = parseInt(slider.max) + 1;
+							}
+						}
+					}
+
+					// console.log(this.responseText)
+				}
+				if(this.readyState == 4){
+					console.log("FINAL:" + this.responseText);
+					// obj.getData();
+				}
+			}
+		}
+	</script>
+	<style type="text/css">
+		body{
+			font-family: sans-serif;
+		}
+	</style>
+</head>
+<body onload="obj.getData()">
+	<h2>Xrē</h2>
+	<p>gooble bloo</p>
+	<hr>
+
+	<div id="dagrediv">
+		<!-- treated as canvas -->
+	</div>
+	
+	<input type="range" min="-1" max="-1" value="-1" id="slider">
+	<input type="button" id="prev" value="<<" onclick="rewind()" class="iterbutt"/>
+	<input type="button" id="next" value=">>" onclick="forward()" class="iterbutt">
+	<br/> <br/>
+	<div id="bcontainer">
+	</div>
+	<script type="text/javascript">
+		// base_graph.container = document.getElementById('dagrediv');
+		graph.container = document.getElementById('dagrediv');
+		var slider = document.getElementById("slider");
+		slider.oninput = function() {
+			render(this.value);
+		}
+
+		function rewind() {
+			slider.stepDown();
+			// console.log("<<");
+			render(slider.value);
+		}
+
+		function forward() {
+			slider.stepUp();
+			// console.log(">>");
+			render(slider.value);
+		}
+
+		document.onkeydown = function(e){
+			e = e || window.event;
+			if (e.keyCode == "37"){ // left arrow
+				rewind();
+			}
+			if (e.keyCode == "39"){ // right arrow
+				forward();
+			}
+		}
+
+
+	</script>
+</body>
+</html>
