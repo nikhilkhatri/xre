@@ -7,14 +7,14 @@ Node *reverseK(Node *list, int k) {
 	Node *prev = NULL;
 	int count = 0;
 	while (curr != NULL && count < k) {
-		next = curr->next;
+		ptrcpy(next, curr->next);
 		ptrcpy(&(curr->next), prev);
 		ptrcpy(&(curr->prev), NULL);
 		if (prev) {
 			ptrcpy(&(prev->prev), curr);
 		}	
-		prev = curr;
-		curr = next; 
+		ptrcpy(&prev, curr);
+		ptrcpy(&curr, next); 
 		count++;
 	}
 
@@ -36,7 +36,14 @@ int main() {
 	// list = prepend(list, 6);
 	// list = append(list, 10);
 	// list = prepend(list, 3);
-	xray_init("output.txt");
+	int xmalloc_stat = xmalloc_init();
+	
+	if(xmalloc_stat == -1){
+		// failed to launch Flask server
+		return(0);
+	}
+
+
 	int n;
 	int k;
 	printf("\nEnter number of data values: ");
@@ -46,12 +53,13 @@ int main() {
 	int val;
 	for(int i = 0; i < n; i++) {
 		scanf("%d",&val);
-		ptrcpy(&list, prepend(list, val));
+		prepend(&list, &list, val);
 	}
 	printf("\n\nEnter the group size for reversal: ");
 	scanf("%d", &k);
 	traverse(list);
-	list = reverseK(list, k);
+	xmalloc_bp("Before reversal");
+	//ptrcpy(&list, reverseK(list, k));
 	traverse(list);
 	reverse_traverse(list);
 }

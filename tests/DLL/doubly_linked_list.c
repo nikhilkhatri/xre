@@ -1,4 +1,5 @@
 #include "doubly_linked_list.h"
+#include "../../src/xmalloc.h"
 
 void create_node(Node **new_node,Node *prev, Node *next, int data) {
   //Node *new_node = (Node *)malloc(sizeof(Node));
@@ -22,8 +23,8 @@ int isEmpty(Node *list) {
 }
 
 
-void prepend(Node *list, Node *new_node, int data) {
-   create_node(&new_node,NULL, list, data);
+void prepend(Node **list, Node **new_node, int data) {
+   create_node(new_node,NULL, *list, data);
    //printf("%p\n", new_node);
    return new_node;
 }

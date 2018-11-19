@@ -12,7 +12,7 @@ typedef struct node {
 
 void create_node(Node **new_node, Node *prev, Node *next, int data);
 int isEmpty(Node *list);
-Node *prepend(Node *list, int data);
+void prepend(Node **list, Node **new_node, int data);
 Node *append(Node *list, int data);
 Node* deleteNode(Node *list, Node *del);
 Node* deleteNodeAtGivenPos(Node *list, int index);

@@ -8,15 +8,13 @@ Node *concatenate(Node *leftList, Node *rightList)
         return rightList; 
     if (rightList == NULL) 
         return leftList; 
-    Node *leftLast ;
-    ptrcpy(&(leftLast), leftList->left); 
-    Node *rightLast ;
-    ptrcpy(&(rightLast), rightList->left);
+    Node *leftLast = leftList->left;
+    Node *rightLast = rightList->left;
     ptrcpy(&(leftLast->right), rightList);
-    ptrcpy(&(rightLast->right), rightList);  
+    ptrcpy(&(rightList->left), leftLast);  
     ptrcpy(&(leftList->left), rightLast);
     ptrcpy(&(rightLast->right), leftList);
-  
+
     return leftList; 
 } 
   
@@ -28,7 +26,10 @@ Node *bTreeToCList(Node *root)
   
     Node *left = bTreeToCList(root->left); 
     Node *right = bTreeToCList(root->right); 
-    root->left = root->right = root; 
+    ptrcpy(&(root->left), root);
+    ptrcpy(&(root->right), root);
+    //root->left = root->right = root; 
+
     return concatenate(concatenate(left, root), right); 
 } 
   
@@ -75,18 +76,19 @@ int main()
     }
 
      //printf("1");
-     Node *root = NULL;
-	 int n;
-	 printf("Enter number of nodes: ");
-	 scanf("%d", &n);
-	 for (int i = 0; i < n; i++) {
-		int data;
-		scanf("%d", &data);
-		insert(&root, data);	
-	 }
-	
-    bTreeToCList(root); 
-   
+    Node *root = NULL;
+    int n;
+    printf("Enter number of nodes: ");
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+        int data;
+        scanf("%d", &data);
+        insert(&root, data);	
+    }
+
+    xmalloc_bp("Binary Tree Created");
+    ptrcpy(&root, bTreeToCList(root));  
+    xmalloc_bp("Transformed to DLL");
     displayCList(root); 
     
     return 0; 
