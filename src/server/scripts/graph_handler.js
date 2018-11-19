@@ -67,8 +67,24 @@ graph = {
 		{
 			selector: 'node',
 			style: {
-				'background-color': '#666',
-				'label': 'data(id)'
+				'background-color': function(ele){
+					if(ele._private.data.id == "0"){
+						return "#F00";
+					}
+					else if(ele._private.data.alloced == "H"){
+						return "#17A";
+					}
+					else if(ele._private.data.alloced == "S"){
+						return "#ffb380";
+					}
+					else {
+						return "#CCC";
+					}
+				},
+				'label': function(ele) {
+					return parseInt(ele._private.data.id).toString(16);
+
+				}
 			}
 		},
 
@@ -76,7 +92,7 @@ graph = {
 			selector: 'edge',
 			style: {
 				'width': 1,
-				'line-color': '#f00',
+				'line-color': '#007',
 				'mid-target-arrow-color': '#00f',
 				'mid-target-arrow-shape': 'triangle',
 				'label': function(ele){
@@ -88,7 +104,6 @@ graph = {
 	],
 
 	layout: {
-		name: 'grid',
-		rows: 1
+		name: 'breadthfirst'
 	}
 }

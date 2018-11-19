@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>COMET - Streaming</title>
+	<title>Xre</title>
 	<style type="text/css">
 		#dagrediv {
 			width: 100vw;
-			height: 100vh;
+			height: 50vh;
 			display: block;
 		}
 	</style>
@@ -14,12 +14,15 @@
 		cursor = 0;
 	</script>
 
+	<link rel="stylesheet" type="text/css" href="styles/styles.css">
+	<!-- <script type="text/javascript" src="scripts/cytoscape-dagre.js"></script> -->
 	<script type="text/javascript" src="scripts/cytoscape.js"></script>
 	<script type="text/javascript" src="scripts/graph_handler.js"></script>
 	<script type="text/javascript" src="scripts/sig_parser.js"></script>
 
 	<script type="text/javascript">
 		last_len = 0;
+		bpts = [];
 		obj = {
 			xhr: new XMLHttpRequest(),
 			getData: function(){
@@ -30,14 +33,45 @@
 			showData: function(){
 				if(this.readyState == 3){
 					var res = this.responseText;
+
+					var new_len = res.length;
 					res = res.slice(last_len);
+					last_len = new_len;
+					
 					var resArr = res.split("\n");
 
 					for(var i=0; i < resArr.length; i+= 1){
 						if(resArr[i].length > 1){
-							signal_array.push(JSON.parse(resArr[i]));
-							var slider = document.getElementById("slider");
-							slider.max = parseInt(slider.max) + 1;
+							var thissig = JSON.parse(resArr[i]);
+							
+							if (thissig.sigtype == "SIGBRK") {
+								// console.log("BREAKKKKK");
+								// console.log(thissig.label);
+								bpts.push(thissig);
+								var bcont = document.getElementById("bcontainer");
+								
+								var slider = document.getElementById("slider");
+								
+								var bpt = document.createElement("input");
+								bpt.type = "button";
+								bpt.value = thissig.label;
+								bpt.pos = slider.max;
+								
+								bpt.onclick = function() {
+									var slider = document.getElementById("slider");
+									slider.value = this.pos;
+									render(this.pos);
+								}
+
+								bcont.appendChild(bpt);
+							}
+							
+							else {
+								signal_array.push(thissig);
+								var slider = document.getElementById("slider");
+								slider.min = "0";
+								slider.max = parseInt(slider.max) + 1;
+							}
 						}
 					}
 
@@ -58,14 +92,19 @@
 </head>
 <body onload="obj.getData()">
 	<h2>Xrē</h2>
-	<p>Example front end client for the Xre streaming server</p>
-	<p>All logs are logged to console</p>
+	<p>gooble bloo</p>
+	<hr>
 
 	<div id="dagrediv">
 		<!-- treated as canvas -->
 	</div>
 	
-	<input type="range" min=0 max=0 value=0 id="slider" width="100%">
+	<input type="range" min="-1" max="-1" value="-1" id="slider">
+	<input type="button" id="prev" value="<<" onclick="rewind()" class="iterbutt"/>
+	<input type="button" id="next" value=">>" onclick="forward()" class="iterbutt">
+	<br/> <br/>
+	<div id="bcontainer">
+	</div>
 	<script type="text/javascript">
 		// base_graph.container = document.getElementById('dagrediv');
 		graph.container = document.getElementById('dagrediv');
@@ -73,6 +112,30 @@
 		slider.oninput = function() {
 			render(this.value);
 		}
+
+		function rewind() {
+			slider.stepDown();
+			// console.log("<<");
+			render(slider.value);
+		}
+
+		function forward() {
+			slider.stepUp();
+			// console.log(">>");
+			render(slider.value);
+		}
+
+		document.onkeydown = function(e){
+			e = e || window.event;
+			if (e.keyCode == "37"){ // left arrow
+				rewind();
+			}
+			if (e.keyCode == "39"){ // right arrow
+				forward();
+			}
+		}
+
+
 	</script>
 </body>
 </html>

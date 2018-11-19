@@ -44,6 +44,7 @@ def clog_to_json(clog):
 			obj["dest"] = int(clog[3], 16)
 		return obj
 
+
 	if(clog[0] == "F"):
 		obj = dict()
 		obj["sigtype"] = "SIGFREE"
@@ -66,6 +67,11 @@ def clog_to_json(clog):
 			obj["dest"] = int(clog[3], 16)
 		return obj
 
+	if(clog[0] == "B"):
+		obj = dict()
+		obj["sigtype"] = "SIGBRK"
+		obj["label"] = clog[1]
+		return obj
 	else:
 		return "{\"FAILURE\"}"
 
