@@ -13,6 +13,7 @@ Node *detect_and_remove_loop(Node *list) {
 	Node *fast = next(next(list));
 
 	while (fast && next(fast)) {
+		// xmalloc_bp("Iterating");
 		if (slow == fast) {
 			break;
 		}

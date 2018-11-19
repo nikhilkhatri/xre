@@ -72,7 +72,7 @@ graph = {
 						return "#F00";
 					}
 					else if(ele._private.data.alloced == "H"){
-						return "#17A";
+						return "#000";
 					}
 					else if(ele._private.data.alloced == "S"){
 						return "#ffb380";
@@ -91,10 +91,11 @@ graph = {
 		{
 			selector: 'edge',
 			style: {
-				'width': 1,
-				'line-color': '#007',
-				'mid-target-arrow-color': '#00f',
+				'width': 2,
+				'line-color': '#faa',
+				'mid-target-arrow-color': '#a77',
 				'mid-target-arrow-shape': 'triangle',
+				'arrow-scale': 2,
 				'label': function(ele){
 					// console.log(ele);
 					return ele._private.data.id.split("_")[1];
