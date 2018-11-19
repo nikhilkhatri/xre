@@ -83,7 +83,6 @@ graph = {
 				},
 				'label': function(ele) {
 					return parseInt(ele._private.data.id).toString(16);
-
 				}
 			}
 		},

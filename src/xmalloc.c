@@ -191,7 +191,7 @@ void xmalloc_free(void *ptr){
 	// place DLLnode in freed
 	int status = _move_memchunk(this_chunk);
 
-	fprintf(pype, "F:%x\n", this_chunk);
+	fprintf(pype, "F:%x\n", this_chunk->chunk);
 	fflush(pype);
 	return;
 }

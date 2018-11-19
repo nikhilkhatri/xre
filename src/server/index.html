@@ -11,7 +11,7 @@
 	</style>
 	<script type="text/javascript">
 		signal_array = [];
-		cursor = 0;
+		cursor = -1;
 	</script>
 
 	<link rel="stylesheet" type="text/css" href="styles/styles.css">
@@ -72,6 +72,8 @@
 								var slider = document.getElementById("slider");
 								slider.min = "0";
 								slider.max = parseInt(slider.max) + 1;
+								slider.value = "0";
+								render("0");
 							}
 						}
 					}

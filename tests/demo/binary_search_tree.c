@@ -1,5 +1,5 @@
 #include "binary_search_tree.h"
-
+#include "../../src/xmalloc.h"
 
 
 
@@ -74,9 +74,10 @@ Node *deleteNode(Node **root, int data) {
 
 		(*root)->data = temp->data;
 		ptrcpy(&(*root)->right, deleteNode(&(*root)->right, temp->data));
+
 	}
 
-
+      return *root;
 }
 
 void inorder_traversal(Node *root) {
@@ -97,6 +98,7 @@ int main() {
 		return(0);
 	}
 
+
 	Node *root = NULL;
 	int n;
 	printf("Enter number of nodes: ");
@@ -106,12 +108,13 @@ int main() {
 		scanf("%d", &data);
 		insert(&root, data);	
 	}
-
 	xmalloc_bp("Created BST");
 	inorder_traversal(root);
-	deleteNode(&root, 70);
-	// seg fault occurs on calling inorder
+	printf("end\n");
+	xmalloc_bp("Free node");
+	ptrcpy(&root, deleteNode(&root, 50));
 	inorder_traversal(root);
+	printf("end\n");
 	
 }
 

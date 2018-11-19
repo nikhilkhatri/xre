@@ -1,5 +1,5 @@
 #include "fibonacci_heap.h"
-#include "xmalloc.h"
+#include "../../src/xmalloc.h"
 
 
 void make_fib_heap(Heap **H) {
@@ -21,10 +21,10 @@ void create_node(Node **x, int data) {
 		(*x)->degree = 0;
 		(*x)->data = data;
 		(*x)->marked = FALSE;
-		ptrcpy(&((*x)->parent), NULL);
-		ptrcpy(&((*x)->child), NULL);
-		ptrcpy(&((*x)->left), NULL);
-		ptrcpy(&((*x)->right), NULL);
+		(*x)->parent = NULL;
+		(*x)->child = NULL;
+		(*x)->left = NULL;
+		(*x)->right = NULL;
 
 	}
 }
@@ -60,6 +60,7 @@ Node *minimum(Heap *H) {
 	return H->min;
 }
 
+
 void fib_heap_union(Heap **H, Heap **H1, Heap **H2) {
 	make_fib_heap(H);
 
@@ -87,46 +88,68 @@ void fib_heap_union(Heap **H, Heap **H1, Heap **H2) {
 	
 }
 
-void fib_heap_extract_min(Heap **H) {
-	Node **z = &(*H)->min;
-	if (*z != NULL) {
-		Node *x = (*z)->child;
-		while (x != NULL) {
-			insert(H, x);
-			ptrcpy(&x->parent, NULL);
-			x = x->right;
-		}
-		if ((*z)->left == *z) {		// Heap has only one node
-			(*H)->min = NULL;
-			//free(z);
-		}
-		else {						// Atleast two nodes
-			Node *left = (*z)->left;
-			Node *right = (*z)->right;
-			ptrcpy(&left->right, right);
-			ptrcpy(&right->left, left);
-			ptrcpy(&(*H)->min, (*z)->right);
-			consolidate(H);
-		}
-		(*H)->node_count = (*H)->node_count - 1;
-	}
-	return z;
-}
+// void fib_heap_extract_min(Heap **H) {
+// 	Node **z = &(*H)->min;
+// 	if (*z != NULL) {
+// 		Node *x = (*z)->child;
+// 		while (x != NULL) {
+// 			insert(H, x);
+// 			ptrcpy(&x->parent, NULL);
+// 			x = x->right;
+// 		}
+// 		if ((*z)->left == *z) {		// Heap has only one node
+// 			(*H)->min = NULL;
+// 			//free(z);
+// 		}
+// 		else {						// Atleast two nodes
+// 			Node *left = (*z)->left;
+// 			Node *right = (*z)->right;
+// 			ptrcpy(&left->right, right);
+// 			ptrcpy(&right->left, left);
+// 			ptrcpy(&(*H)->min, (*z)->right);
+// 			consolidate(H);
+// 		}
+// 		(*H)->node_count = (*H)->node_count - 1;
+// 	}
+// 	return z;
+// }
 
-void consolidate(Heap **H) {
+// void consolidate(Heap **H) {
 
-}
+// }
 
 
 int main() {
+	int xmalloc_stat = xmalloc_init();
+	
+	if(xmalloc_stat == -1){
+		// failed to launch Flask server
+		return(0);
+	}
 	int n;
 	scanf("%d", &n);
-	Heap *H;
-	make_fib_heap(&H);
+	Heap *H1;
+	make_fib_heap(&H1);
 	for(int i = 0; i < n; i++) {
 		int data;
 		scanf("%d", &data);
 		Node *x;
-		create_and_insert(&H, &x, data);
+		create_and_insert(&H1, &x, data);
 	}
+	xmalloc_bp("Created Heap#1");
+
+	Heap *H2;
+	scanf("%d", &n);
+	make_fib_heap(&H2);
+	for(int i = 0; i < n; i++) {
+		int data;
+		scanf("%d", &data);
+		Node *x;
+		create_and_insert(&H2, &x, data);
+	}
+	xmalloc_bp("Created Heap#2");
+
+	Heap *H;
+	fib_heap_union(&H, &H1, &H2);
+
 }
