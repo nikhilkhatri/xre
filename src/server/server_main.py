@@ -1,11 +1,9 @@
 import sys
-from flask import Flask, Response
-from flask_cors import CORS
+from flask import Flask, Response, render_template
 import time
 import json
 
 app = Flask(__name__)
-CORS(app)
 
 
 def clog_to_json(clog):
@@ -90,10 +88,13 @@ def generate():
 			time.sleep(0.1)
 
 
-@app.route('/')
+@app.route('/stream')
 def stream_response():
 	return Response(generate())
 
+@app.route('/')
+def homepage():
+	return render_template('index.html')
 
 if __name__ == "__main__":
 	# generate()
