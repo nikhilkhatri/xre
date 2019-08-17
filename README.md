@@ -3,6 +3,10 @@
 A visual trace of your C data structures.
 _We're going to call it Xre through the rest of this, because Xrē is really hard to type._
 
+<p align="center">
+	<img src="https://media.giphy.com/media/dAdEFJwevwxJgRlz0C/giphy.gif"/>
+</p>
+
 
 ## Introduction
 
@@ -29,4 +33,13 @@ This function adds to client code complexity and we would love feedback on how w
 ## Prerequisites
 - python-flask
 - cytoscape - https://github.com/cytoscape/cytoscape.js
--- To use cytoscape-js, download the .js files found in the dist directory of the above repo, and place them in `xre\src\server\static\scripts\` of your xre installation.
+-- To use cytoscape-js, download the .js files found in the dist directory of branch 2.x of the above repo, and place them in `xre\src\server\static\scripts\` of your xre installation.
+
+## Warning
+The flask server launched must be manually killed before executing a new C program using xre. 
+```
+	ps -x | grep python
+	kill -9 <proc-id>
+```
+This prevents multiple instances of the flask server from running simultaneously.
+
