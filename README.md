@@ -3,6 +3,10 @@
 A visual trace of your C data structures.
 _We're going to call it Xre through the rest of this, because Xrē is really hard to type._
 
+<p align="center">
+	<img src="https://media.giphy.com/media/dAdEFJwevwxJgRlz0C/giphy.gif"/>
+</p>
+
 
 ## Introduction
 
