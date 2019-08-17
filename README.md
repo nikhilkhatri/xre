@@ -31,9 +31,25 @@ Basically does `*dest = src`. The signature is more complex than seems necessary
 This function adds to client code complexity and we would love feedback on how we migh simplify this, while maintaining functionality.
 
 ## Prerequisites
-- python-flask
+- python3
+- Flask
 - cytoscape - https://github.com/cytoscape/cytoscape.js
 -- To use cytoscape-js, download the .js files found in the dist directory of branch 2.x of the above repo, and place them in `xre\src\server\static\scripts\` of your xre installation.
+
+## Instruction
+Makefile commands supported:
+```
+	make build FILE=<path_to_c_program>
+	make clean
+```
+
+To compile and execute a C program using Xre, execute the following command:
+```
+	make build FILE=./tests/BST/binary_search_tree.c
+	cd bin
+	./binary_search_tree
+```
+A flask server is instantiated which runs on the localhost[:5000]. To view the visual trace, go to http://localhost:5000/
 
 ## Warning
 The flask server launched must be manually killed before executing a new C program using xre. 
