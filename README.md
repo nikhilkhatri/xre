@@ -29,4 +29,13 @@ This function adds to client code complexity and we would love feedback on how w
 ## Prerequisites
 - python-flask
 - cytoscape - https://github.com/cytoscape/cytoscape.js
--- To use cytoscape-js, download the .js files found in the dist directory of the above repo, and place them in `xre\src\server\static\scripts\` of your xre installation.
+-- To use cytoscape-js, download the .js files found in the dist directory of branch 2.x of the above repo, and place them in `xre\src\server\static\scripts\` of your xre installation.
+
+## Warning
+The flask server launched must be manually killed before executing a new C program using xre. 
+```
+	ps -x | grep python
+	kill -9 <proc-id>
+```
+This prevents multiple instances of the flask server from running simultaneously.
+
