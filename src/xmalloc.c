@@ -87,7 +87,7 @@ int xmalloc_init(){
 	// launches Flask server, opens pipe for logging
 	// consider adding an atExit type event handler
 
-	pype = popen("python3 ../../src/server/server_main.py", "w");
+	pype = popen("python3 ./../src/server/server_main.py", "w");
 
 	if (pype == NULL){
 		return -1;
