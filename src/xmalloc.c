@@ -81,6 +81,10 @@ int _move_memchunk(memchunk *chunk){
 	return -1;
 }
 
+int xmalloc_exit(){
+  return pclose(pype);
+}
+
 int xmalloc_init(){
 	
 	// NOTE: this interface will probably change repeatedly while in dev
@@ -92,6 +96,11 @@ int xmalloc_init(){
 	if (pype == NULL){
 		return -1;
 	}
+  
+  // Close the pipe when we exit so that python can exit gracefully
+  if(atexit(xmalloc_exit) != 0){ 
+    perror("Failed to close the server. Kill it yourself\n");
+  }
 
 	return 0;
 }
